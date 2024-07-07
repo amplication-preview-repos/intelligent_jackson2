@@ -1,0 +1,96 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Locations {
+  id             String                  @id @default(cuid())
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  name           String?
+  typeField      EnumLocationsTypeField?
+  address        String?
+  trackingEvents TrackingEvent[]
+}
+
+model Samples {
+  id        String             @id @default(cuid())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  barcode   String?
+  typeField String?
+  status    EnumSamplesStatus?
+}
+
+model Shipments {
+  id             String               @id @default(cuid())
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  shipmentNumber String?
+  status         EnumShipmentsStatus?
+}
+
+model Boxes {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  typeField String?
+  capacity  Int?
+  barcode   String?
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  barcode   String?
+  typeField String?
+  content   Json?
+}
+
+model ActionTypes {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  action      String?
+  description String?
+}
+
+model TrackingEvent {
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  timestamp  DateTime?
+  action     String?
+  reference  String?
+  location   Locations? @relation(fields: [locationId], references: [id])
+  locationId String?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+}
+
+enum EnumLocationsTypeField {
+  Option1
+}
+
+enum EnumSamplesStatus {
+  Option1
+}
+
+enum EnumShipmentsStatus {
+  Option1
+}
